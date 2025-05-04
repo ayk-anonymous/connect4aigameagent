@@ -9,7 +9,17 @@ type Props = {
 const StartMenu: React.FC<Props> = ({ onStart, difficulty, setDifficulty }) => {
   return (
     <div className="menu">
-      <h1>Connect 4</h1>
+      <img
+        src="/Logo.png"
+        alt="Connect 4 Logo"
+        style={{
+          width: "100%",
+          maxWidth: "700px",
+          height: "auto",
+          marginBottom: "24px",
+        }}
+      />
+
       <div className="difficulty">
         <p>Select Difficulty:</p>
         <div className="buttons">
@@ -24,6 +34,7 @@ const StartMenu: React.FC<Props> = ({ onStart, difficulty, setDifficulty }) => {
           ))}
         </div>
       </div>
+
       <button className="start-btn" onClick={onStart}>
         Start Game
       </button>

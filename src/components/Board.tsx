@@ -296,6 +296,7 @@ const Board: React.FC<Props> = ({
       )}
 
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "60px", width: "100%" }}>
+        <img src="/Logo.png" alt="Game Logo" style={{width: "100%", maxWidth: "360px", height: "auto", marginBottom: "16px" }} />
         <div style={{
           fontSize: "clamp(1rem, 2.5vw, 1.5rem)",
           color: "#fff",
