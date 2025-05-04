@@ -41,8 +41,8 @@ const Board: React.FC<Props> = ({
   const [hoverCol, setHoverCol] = useState<number | null>(null);
   const [winningCells, setWinningCells] = useState<[number, number][]>([]);
   const [winner, setWinner] = useState<string | null>(null);
-  const cellSize = 80;
 
+  const cellSize = 80;
   const width = COLUMN_COUNT * cellSize;
   const height = (ROW_COUNT + 1) * cellSize;
 
@@ -117,9 +117,8 @@ const Board: React.FC<Props> = ({
     }
   };
 
-  const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleClick = (col: number) => {
     if (gameOver || turn !== 0) return;
-    const col = Math.floor(e.nativeEvent.offsetX / cellSize);
 
     if (isValidLocation(board, col)) {
       const row = getNextOpenRow(board, col);
@@ -136,6 +135,20 @@ const Board: React.FC<Props> = ({
       }
       setTurn(1);
     }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const bounds = e.currentTarget.getBoundingClientRect();
+    const col = Math.floor(((e.clientX - bounds.left) / bounds.width) * COLUMN_COUNT);
+    setHoverCol(col);
+  };
+
+  const handleTouch = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    const touch = e.touches[0];
+    const bounds = e.currentTarget.getBoundingClientRect();
+    const x = touch.clientX - bounds.left;
+    const col = Math.floor((x / bounds.width) * COLUMN_COUNT);
+    handleClick(col);
   };
 
   useEffect(() => {
@@ -201,7 +214,6 @@ const Board: React.FC<Props> = ({
 
   return (
     <>
-      {/* Pause Button */}
       <button
         onClick={onPause}
         style={{
@@ -221,7 +233,6 @@ const Board: React.FC<Props> = ({
         ⏸ Pause
       </button>
 
-      {/* Winner Overlay */}
       {winner && (
         <div
           style={{
@@ -248,7 +259,6 @@ const Board: React.FC<Props> = ({
               fontWeight: "bold",
               textAlign: "center",
               marginBottom: "20px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
             }}
           >
             {winner}
@@ -266,7 +276,7 @@ const Board: React.FC<Props> = ({
               marginBottom: "10px",
             }}
           >
-            🔁 Play Again
+            Play Again
           </button>
           <button
             onClick={goToMainMenu}
@@ -280,32 +290,44 @@ const Board: React.FC<Props> = ({
               cursor: "pointer",
             }}
           >
-            🏠 Main Menu
+            Back to Menu
           </button>
         </div>
       )}
 
-      {/* Game Board */}
-      <div
-        className="board-container"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          marginTop: "60px",
-        }}
-      >
-        <TurnLabel turn={turn} />
-        <canvas
-          ref={canvasRef}
-          width={width}
-          height={height}
-          onClick={handleClick}
-          onMouseMove={(e) =>
-            setHoverCol(Math.floor(e.nativeEvent.offsetX / cellSize))
-          }
-          onMouseLeave={() => setHoverCol(null)}
-        />
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "60px", width: "100%" }}>
+        <div style={{
+          fontSize: "clamp(1rem, 2.5vw, 1.5rem)",
+          color: "#fff",
+          marginBottom: "12px",
+          fontWeight: "bold",
+          textAlign: "center",
+        }}>
+          <TurnLabel turn={turn} />
+        </div>
+
+        <div className="board-wrapper">
+          <canvas
+            ref={canvasRef}
+            width={width}
+            height={height}
+            style={{
+              width: "100%",
+              maxWidth: "560px",
+              height: "auto",
+              touchAction: "manipulation",
+              display: "block",
+            }}
+            onClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const col = Math.floor(((e.clientX - rect.left) / rect.width) * COLUMN_COUNT);
+              handleClick(col);
+            }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={() => setHoverCol(null)}
+            onTouchStart={handleTouch}
+          />
+        </div>
       </div>
     </>
   );

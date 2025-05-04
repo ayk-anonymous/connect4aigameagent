@@ -28,7 +28,6 @@ body {
 /* Game canvas */
 canvas {
   border-radius: 1rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   background: radial-gradient(circle at center, #0070f3, #003366);
 }
 
@@ -113,15 +112,14 @@ button:hover {
 }
 
 .difficulty .buttons {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  display: inline;
 }
 
 .difficulty button {
   padding: 8px 14px;
   font-size: 0.9rem;
   border-radius: 6px;
+  margin: 0.5rem;
 }
 
 .difficulty button.selected {
